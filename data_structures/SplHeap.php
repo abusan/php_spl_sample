@@ -24,43 +24,86 @@
 
 //    SplHeapに入れることができるのは単純な数値や文字列だけでなく、配列、オブジェクトも扱うことができます。
 
-class EventRankingHeap extends SplHeap
+class RankingHeap extends SplHeap
 {
     public function compare($array1, $array2)
     {
-        return $array1['event_points'] - $array2['event_points'];
+        return $array1['point'] - $array2['point'];
     }
 }
 
-$event_ranking_heap = new EventRankingHeap();
+$ranking_heap = new RankingHeap();
 
-// DBからユーザーのイベントデータを取得したと仮定
-$person_event_data_arr = array(
-    array('person_id' => 1, 'person_name' => 'tarou', 'event_points' => 100),
-    array('person_id' => 2, 'person_name' => 'jirou', 'event_points' => 200),
-    array('person_id' => 3, 'person_name' => 'saburou', 'event_points' => 50),
-    array('person_id' => 4, 'person_name' => 'shirou', 'event_points' => 70),
-    array('person_id' => 5, 'person_name' => 'gorou', 'event_points' => 150),
-    array('person_id' => 6, 'person_name' => 'rokurou', 'event_points' => 120),
-    array('person_id' => 7, 'person_name' => 'sitirou', 'event_points' => 20),
-    array('person_id' => 8, 'person_name' => 'hatirou', 'event_points' => 95),
-    array('person_id' => 9, 'person_name' => 'kurou', 'event_points' => 133),
-    array('person_id' => 10, 'person_name' => 'juurou', 'event_points' => 170),
+$point_data_arr = array(
+    array('id' => 1,  'name' => 'tarou',   'point' => 100),
+    array('id' => 2,  'name' => 'jirou',   'point' => 200),
+    array('id' => 3,  'name' => 'saburou', 'point' => 50),
+    array('id' => 4,  'name' => 'shirou',  'point' => 70),
+    array('id' => 5,  'name' => 'gorou',   'point' => 150),
+    array('id' => 6,  'name' => 'rokurou', 'point' => 120),
+    array('id' => 7,  'name' => 'sitirou', 'point' => 20),
+    array('id' => 8,  'name' => 'hatirou', 'point' => 95),
+    array('id' => 9,  'name' => 'kurou',   'point' => 130),
+    array('id' => 10, 'name' => 'juurou',  'point' => 170),
 );
 
-foreach ($person_event_data_arr as $person_event_data) {
-    $event_ranking_heap->insert($person_event_data);
+foreach ($point_data_arr as $point_data) {
+    $ranking_heap->insert($point_data);
 }
 
-foreach ($event_ranking_heap as $event_ranking_data) {
-    echo implode(',', $event_ranking_data)."\n";
+foreach ($ranking_heap as $ranking_data) {
+    echo implode(',', $ranking_data)."\n";
 }
 
+unset($ranking_heap);
 
+// ========== 実行速度比較 ==========
 
+// テストデータ
+unset($point_data_arr);
+$point_data_arr = [];
+for ($i = 0; $i < 100000; $i++) { 
+    $point_data_arr[]['point'] = mt_rand(1, 10000);
+}
 
+// usort
+function compare($array1, $array2)
+{
+    return $array1['point'] - $array2['point'];
+}
+$point_data_arr_for_array = $point_data_arr;
 
+$start_memory = memory_get_usage();
+$start_time   = microtime(true);
+usort($point_data_arr_for_array, "compare");
+echo "usort()         time:   " . (microtime(true) - $start_time) . PHP_EOL;
+echo "usort()         memory: " . (memory_get_usage() - $start_memory) . PHP_EOL;
+unset($point_data_arr_for_array);
 
+// SplHeap
+$start_memory = memory_get_usage();
+$start_time   = microtime(true);
+$ranking_heap = new RankingHeap();
+foreach ($point_data_arr as $point_data) {
+    $ranking_heap->insert($point_data);
+}
+echo "SplHeap()       time:   " . (microtime(true) - $start_time) . PHP_EOL;
+echo "SplHeap()       memory: " . (memory_get_usage() - $start_memory) . PHP_EOL;
 
+// 1回目
+// usort()         time:   1.4267411231995
+// usort()         memory: 9849000
+// SplHeap()       time:   0.21800780296326
+// SplHeap()       memory: 1047440
 
+// 2回目
+// usort()         time:   1.4669029712677
+// usort()         memory: 9849000
+// SplHeap()       time:   0.2252950668335
+// SplHeap()       memory: 1047440
 
+// 3回目
+// usort()         time:   1.4586658477783
+// usort()         memory: 9849000
+// SplHeap()       time:   0.21258807182312
+// SplHeap()       memory: 1047440
