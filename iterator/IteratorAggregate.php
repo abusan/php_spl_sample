@@ -23,7 +23,7 @@ class BasicIteratorAggregate implements IteratorAggregate
 
     public function __construct()
     {
-        $data_arr = [];
+        $this->data_arr = [];
     }
 
     public function set($key, $value)
@@ -61,7 +61,7 @@ class BasicIteratorAggregateGenerator implements IteratorAggregate
 
     public function __construct()
     {
-        $data_arr = [];
+        $this->data_arr = [];
     }
 
     public function set($key, $value)
