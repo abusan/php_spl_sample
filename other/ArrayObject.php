@@ -31,3 +31,17 @@ $data_arr = [
 ];
 $data_list = new DataList($data_arr);
 echo $data_list[0].PHP_EOL;
+echo $data_list[1].PHP_EOL;
+echo $data_list[2].PHP_EOL;
+echo $data_list[3].PHP_EOL;
+echo $data_list[4].PHP_EOL;
+
+$data_list[1] = 'second element';
+echo $data_list[1].PHP_EOL;
+
+// function array_type_hint(array $array)
+// {
+//
+// }
+// array_type_hint($data_list);
+// PHP Fatal error:  Uncaught TypeError: Argument 1 passed to array_type_hint() must be of the type array, object given
